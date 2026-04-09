@@ -95,7 +95,6 @@ Expected: Consistent RTT values across all three runs, proving repeatability.
 ### 1. POX Controller Started
 <img width="1919" height="939" alt="Screenshot 2026-04-09 103034" src="https://github.com/user-attachments/assets/1fde6e3c-fd1d-4ee9-b7a8-a867f0d442aa" />
 
-
 ### 2. Mininet Topology Started
 <img width="1912" height="963" alt="Screenshot 2026-04-09 103112" src="https://github.com/user-attachments/assets/f333ea3f-dd3a-41a4-8d2e-54af3d1e32b5" />
 
@@ -112,26 +111,23 @@ Expected: Consistent RTT values across all three runs, proving repeatability.
 ## Controller Logs
 
 ### 5. POX Delay and Forward Logs
-<!-- drag and drop screenshot 5 here --><img width="1574" height="1001" alt="Screenshot 2026-04-09 103543" src="https://github.com/user-attachments/assets/ac78c54c-d820-4053-aa8b-545283ee20b4" />
+<img width="1574" height="1001" alt="Screenshot 2026-04-09 103543" src="https://github.com/user-attachments/assets/ac78c54c-d820-4053-aa8b-545283ee20b4" />
 
 
 ## Flow Tables
 
-### 6. Flow Table — Switch s1
+### 6. Flow Tables — Switch s1 and s2
 <img width="1516" height="175" alt="Screenshot 2026-04-09 103631" src="https://github.com/user-attachments/assets/5231874a-f560-4bb4-b82e-a5dc6cecd6a6" />
-
-### 7. Flow Table — Switch s2
-<!-- drag and drop screenshot 7 here -->
 
 ## Scenario 2 — Blocked Host
 
-### 8. h1 ping h4 — 100% Packet Loss
+### 7. h1 ping h4 — 100% Packet Loss
 <img width="972" height="226" alt="Screenshot 2026-04-09 103716" src="https://github.com/user-attachments/assets/7efa33c1-aae6-454d-89c9-404bb0956016" />
-
+<img width="1463" height="320" alt="Screenshot 2026-04-09 103802" src="https://github.com/user-attachments/assets/4036be0e-c05d-43b5-b00f-f71a545e8b6e" />
 
 ## Throughput
 
-### 9. iperf Bandwidth Measurement h1 to h3
+### 8. iperf Bandwidth Measurement h1 to h3
 <img width="1463" height="320" alt="Screenshot 2026-04-09 103802" src="https://github.com/user-attachments/assets/5af4212b-fc35-4efb-8a30-d2e5c9381e38" />
 
 
