@@ -1,33 +1,32 @@
 # SDN Network Delay Measurement Tool
 
 ## Problem Statement
-Measure and analyze network latency between hosts in a Software Defined Network (SDN) using Mininet and POX controller. The tool demonstrates how an SDN controller can observe, log, and compare delay across different network paths.
+Measure and analyze network latency between hosts in a Software Defined Network (SDN)
+using Mininet and POX controller. The tool demonstrates how an SDN controller can
+observe, log, and compare delay across different network paths.
 
 ## Objectives
-- Use ping for delay measurement between hosts  
-- Record RTT (Round Trip Time) values  
-- Compare delay across different paths (same switch vs cross-switch)  
-- Analyze delay variations using controller logs  
+- Use ping for delay measurement between hosts
+- Record RTT (Round Trip Time) values
+- Compare delay across different paths (same switch vs cross-switch)
+- Analyze delay variations using controller logs
 
 ## Network Topology
-```
 h1 (10.0.0.1) ─┐         ┌─ h3 (10.0.0.3)
-               s1 ───── s2
+s1 ─────s2
 h2 (10.0.0.2) ─┘         └─ h4 (10.0.0.4) [BLOCKED]
-```
-
-- 4 hosts, 2 switches  
-- h1, h2 connect to s1 (same switch = shorter path)  
-- h3, h4 connect to s2 (cross-switch = longer path)  
-- POX controller manages flow rules via OpenFlow  
+- 4 hosts, 2 switches
+- h1, h2 connect to s1 (same switch = shorter path)
+- h3, h4 connect to s2 (cross-switch = longer path)
+- POX controller manages flow rules via OpenFlow
 
 ## Setup & Installation
 
 ### Requirements
-- Ubuntu 20.04/22.04 or WSL2  
-- Python 3.10  
-- Mininet  
-- POX controller  
+- Ubuntu 20.04/22.04 or WSL2
+- Python 3.10
+- Mininet
+- POX controller
 
 ### Install Mininet
 ```bash
@@ -44,8 +43,8 @@ git clone https://github.com/noxrepo/pox.git
 
 ### Clone this repo
 ```bash
-git clone https://github.com/nav-yeah/sdn-delay-measurement.git
-cd sdn-delay-measurement
+git clone https://github.com/nav-yeah/SDN-Delay-Measurement.git
+cd SDN-Delay-Measurement
 cp delay_monitor.py ~/pox/pox/ext/
 ```
 
@@ -65,63 +64,87 @@ sudo python3 topology.py
 
 ## Test Scenarios
 
-### Scenario 1 — Normal Forwarding & Delay Measurement
-```bash
+### Scenario 1 — Normal Forwarding and Delay Measurement
 mininet> h1 ping -c 10 h2
 mininet> h1 ping -c 10 h3
 mininet> sh ovs-ofctl dump-flows s1
 mininet> sh ovs-ofctl dump-flows s2
-```
 
-**Expected:**
-- h1→h2 shows lower RTT (same switch)  
-- h1→h3 shows higher RTT (cross-switch)  
+Expected: h1 to h2 shows lower RTT (same switch). h1 to h3 shows higher RTT (cross-switch).
 
 ### Scenario 2 — Blocked Host (Firewall Rule)
-```bash
 mininet> h1 ping -c 4 h4
-```
 
-**Expected:**
-- 100% packet loss  
-- Controller drops all traffic to h4  
+Expected: 100% packet loss. Controller drops all traffic destined to h4.
 
 ### Throughput Test
-```bash
 mininet> h3 iperf -s &
 mininet> h1 iperf -c h3
-```
 
-**Expected:**
-- Bandwidth measurement between h1 and h3  
+Expected: Bandwidth measurement between h1 and h3 via cross-switch path.
 
-## Expected Output
+### Regression Validation
+mininet> h1 ping -c 3 h2
+mininet> h1 ping -c 3 h2
+mininet> h1 ping -c 3 h2
 
-### Ping Results
-- h1 → h2 (same switch): RTT ~0.1–0.5 ms  
-- h1 → h3 (cross-switch): RTT ~0.3–1.0 ms (higher due to extra hop)  
-- h1 → h4 (blocked): 100% packet loss  
+Expected: Consistent RTT values across all three runs, proving repeatability.
 
-### POX Controller Logs
-```
-INFO:delay_monitor:Delay Monitor Controller started
-INFO:delay_monitor:DELAY | switch=00-00-00-00-00-01 src=xx:xx gap=0.664 ms
-INFO:delay_monitor:FORWARD | switch=00-00-00-00-00-01 xx -> xx port 2
-INFO:delay_monitor:FIREWALL: dropping packet destined to 10.0.0.4
-```
+## Proof of Execution
 
-### Flow Table (ovs-ofctl dump-flows s1)
-- Shows installed OpenFlow rules with match fields, actions, priority, and packet counts  
+### 1. POX Controller Started
+<img width="1919" height="939" alt="Screenshot 2026-04-09 103034" src="https://github.com/user-attachments/assets/1fde6e3c-fd1d-4ee9-b7a8-a867f0d442aa" />
+
+
+### 2. Mininet Topology Started
+<img width="1912" height="963" alt="Screenshot 2026-04-09 103112" src="https://github.com/user-attachments/assets/f333ea3f-dd3a-41a4-8d2e-54af3d1e32b5" />
+
+## Ping Results
+
+### 3. Scenario 1a — h1 to h2 (same switch, lower RTT)
+<img width="961" height="502" alt="Screenshot 2026-04-09 103342" src="https://github.com/user-attachments/assets/49ba8401-5adf-4106-90ef-54b5535501e0" />
+
+
+### 4. Scenario 1b — h1 to h3 (cross-switch, higher RTT)
+<img width="996" height="488" alt="Screenshot 2026-04-09 103434" src="https://github.com/user-attachments/assets/a9f8b2ed-7e2f-4177-b693-ff0674da2565" />
+
+
+## Controller Logs
+
+### 5. POX Delay and Forward Logs
+<!-- drag and drop screenshot 5 here --><img width="1574" height="1001" alt="Screenshot 2026-04-09 103543" src="https://github.com/user-attachments/assets/ac78c54c-d820-4053-aa8b-545283ee20b4" />
+
+
+## Flow Tables
+
+### 6. Flow Table — Switch s1
+<img width="1516" height="175" alt="Screenshot 2026-04-09 103631" src="https://github.com/user-attachments/assets/5231874a-f560-4bb4-b82e-a5dc6cecd6a6" />
+
+### 7. Flow Table — Switch s2
+<!-- drag and drop screenshot 7 here -->
+
+## Scenario 2 — Blocked Host
+
+### 8. h1 ping h4 — 100% Packet Loss
+<img width="972" height="226" alt="Screenshot 2026-04-09 103716" src="https://github.com/user-attachments/assets/7efa33c1-aae6-454d-89c9-404bb0956016" />
+
+
+## Throughput
+
+### 9. iperf Bandwidth Measurement h1 to h3
+<img width="1463" height="320" alt="Screenshot 2026-04-09 103802" src="https://github.com/user-attachments/assets/5af4212b-fc35-4efb-8a30-d2e5c9381e38" />
+
 
 ## SDN Concepts Demonstrated
-- **Controller-Switch Interaction:** POX handles packet_in events from both switches  
-- **Flow Rule Design:** Match on MAC/IP, action = forward or drop  
-- **Learning Switch:** Controller learns MAC-to-port mapping dynamically  
-- **Firewall:** High-priority drop rule for blocked host  
-- **Delay Measurement:** Inter-packet gap logged per source MAC per switch  
+- **Controller-Switch Interaction:** POX handles packet_in events from both switches
+- **Flow Rule Design:** Match on MAC/IP, action = forward or drop
+- **Learning Switch:** Controller learns MAC-to-port mapping dynamically
+- **Firewall:** High-priority drop rule for blocked host (h4)
+- **Delay Measurement:** Inter-packet gap logged per source MAC per switch
+- **Path Comparison:** Same-switch path vs cross-switch path RTT comparison
 
 ## References
-1. Mininet Documentation: http://mininet.org  
-2. POX Controller: https://github.com/noxrepo/pox  
-3. OpenFlow Specification v1.0: https://opennetworking.org  
-4. Lantz, B., Heller, B., McKeown, N. (2010). *A network in a laptop*. ACM HotNets-IX.
+1. Mininet Documentation: http://mininet.org
+2. POX Controller: https://github.com/noxrepo/pox
+3. OpenFlow Specification v1.0: https://opennetworking.org
+4. Lantz, B., Heller, B., McKeown, N. (2010). A network in a laptop. ACM HotNets-IX.
